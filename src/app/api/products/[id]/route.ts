@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await getSession();
   if (!session || session.role !== "FARMER") {
     return NextResponse.json({ error: "Accès réservé aux agriculteurs" }, { status: 403 });
   }
 
-  const { id } = await params;
+  const { id } = params;
   const product = await prisma.product.findUnique({ where: { id } });
 
   if (!product || product.farmerId !== session.userId) {
@@ -33,13 +33,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   return NextResponse.json(updated);
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await getSession();
   if (!session || session.role !== "FARMER") {
     return NextResponse.json({ error: "Accès réservé aux agriculteurs" }, { status: 403 });
   }
 
-  const { id } = await params;
+  const { id } = params;
   const product = await prisma.product.findUnique({ where: { id } });
 
   if (!product || product.farmerId !== session.userId) {

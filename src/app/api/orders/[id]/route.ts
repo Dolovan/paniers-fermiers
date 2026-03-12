@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
-export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
-  const { id } = await params;
+  const { id } = params;
   const { status } = await request.json();
 
   const validStatuses = ["CONFIRMED", "PREPARING", "READY", "DELIVERED", "CANCELLED"];
